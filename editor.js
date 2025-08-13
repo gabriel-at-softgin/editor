@@ -2,84 +2,124 @@
 // Página simple con un editor de texto
 
 document.addEventListener('DOMContentLoaded', function() {
-  // Panel lateral
-  const sidePanel = document.createElement('div');
-  sidePanel.style.position = 'fixed';
-  sidePanel.style.top = '0';
-  sidePanel.style.right = '0';
-  sidePanel.style.width = '260px';
-  sidePanel.style.height = '100vh';
-  sidePanel.style.background = '#f8f9fa';
-  sidePanel.style.borderLeft = '1px solid #e0e0e0';
-  sidePanel.style.padding = '24px 16px 16px 16px';
-  sidePanel.style.overflowY = 'auto';
-  sidePanel.style.boxShadow = '-2px 0 8px rgba(0,0,0,0.04)';
-  sidePanel.style.zIndex = '100';
+  // Layout principal horizontal con 4 paneles
+  const mainLayout = document.createElement('div');
+  mainLayout.style.display = 'flex';
+  mainLayout.style.flexDirection = 'row';
+  mainLayout.style.alignItems = 'flex-start';
+  mainLayout.style.width = '100vw';
+  mainLayout.style.height = '100vh';
+  mainLayout.style.boxSizing = 'border-box';
+  mainLayout.style.overflow = 'auto';
+
+  // Panel 1: Editor de bloques
+  const editorPanel = document.createElement('div');
+  editorPanel.style.flex = '0 0 420px';
+  editorPanel.style.maxWidth = '420px';
+  editorPanel.style.minWidth = '320px';
+  editorPanel.style.height = '100vh';
+  editorPanel.style.overflowY = 'auto';
+  editorPanel.style.background = '#fafbfc';
+  editorPanel.style.borderRight = '1px solid #e0e0e0';
+  editorPanel.style.padding = '32px 18px 32px 32px';
+  editorPanel.style.boxSizing = 'border-box';
+
+  const title = document.createElement('h2');
+  title.textContent = 'Editor de texto';
+  title.style.textAlign = 'center';
+  editorPanel.appendChild(title);
+
+  const blocksContainer = document.createElement('div');
+  blocksContainer.id = 'blocks-container';
+  editorPanel.appendChild(blocksContainer);
+
+  // Panel 2: Variables
+  const variablesPanel = document.createElement('div');
+  variablesPanel.style.flex = '0 0 260px';
+  variablesPanel.style.maxWidth = '260px';
+  variablesPanel.style.minWidth = '180px';
+  variablesPanel.style.height = '100vh';
+  variablesPanel.style.overflowY = 'auto';
+  variablesPanel.style.background = '#f8f9fa';
+  variablesPanel.style.borderRight = '1px solid #e0e0e0';
+  variablesPanel.style.padding = '32px 16px 32px 16px';
+  variablesPanel.style.boxSizing = 'border-box';
 
   const panelTitle = document.createElement('h3');
   panelTitle.textContent = 'Variables {{}}';
   panelTitle.style.fontSize = '1.1em';
   panelTitle.style.marginTop = '0';
-  sidePanel.appendChild(panelTitle);
+  variablesPanel.appendChild(panelTitle);
 
   const variablesList = document.createElement('div');
   variablesList.id = 'variables-list';
   variablesList.style.paddingLeft = '0';
-  sidePanel.appendChild(variablesList);
+  variablesPanel.appendChild(variablesList);
 
-  // Estado de valores de variables
   const variableValues = {};
 
-  // Panel de vista previa
-  const previewPanel = document.createElement('div');
-  previewPanel.style.margin = '40px auto 0 auto';
-  previewPanel.style.maxWidth = '600px';
-  previewPanel.style.background = '#e9ecef';
-  previewPanel.style.border = '1px solid #d1d5db';
-  previewPanel.style.borderRadius = '8px';
-  previewPanel.style.padding = '24px';
-  previewPanel.style.color = '#888';
-  previewPanel.style.fontSize = '1.05rem';
-  previewPanel.style.pointerEvents = 'none';
-  previewPanel.style.userSelect = 'none';
-  previewPanel.style.marginBottom = '32px';
-  previewPanel.style.minHeight = '60px';
-  previewPanel.style.opacity = '0.7';
-  previewPanel.style.whiteSpace = 'pre-wrap';
-  previewPanel.style.wordBreak = 'break-word';
+  // Panel 3: Output del editor
+  const outputPanel = document.createElement('div');
+  outputPanel.style.flex = '0 0 340px';
+  outputPanel.style.maxWidth = '340px';
+  outputPanel.style.minWidth = '220px';
+  outputPanel.style.height = '100vh';
+  outputPanel.style.overflowY = 'auto';
+  outputPanel.style.background = '#f4f4f4';
+  outputPanel.style.borderRight = '1px solid #e0e0e0';
+  outputPanel.style.padding = '32px 18px 32px 18px';
+  outputPanel.style.boxSizing = 'border-box';
 
-  document.body.appendChild(sidePanel);
+  const outputTitle = document.createElement('h3');
+  outputTitle.textContent = 'Output';
+  outputTitle.style.fontSize = '1.1em';
+  outputTitle.style.marginTop = '0';
+  outputPanel.appendChild(outputTitle);
 
-  // Contenedor principal del editor
-  const editorContainer = document.createElement('div');
-  editorContainer.style.maxWidth = '600px';
-  editorContainer.style.margin = '40px auto';
-  editorContainer.style.padding = '24px';
-  editorContainer.style.border = '1px solid #ccc';
-  editorContainer.style.borderRadius = '8px';
-  editorContainer.style.background = '#fafbfc';
-
-  const title = document.createElement('h2');
-  title.textContent = 'Editor de texto';
-  title.style.textAlign = 'center';
-  editorContainer.appendChild(title);
-
-  // Contenedor de bloques
-  const blocksContainer = document.createElement('div');
-  blocksContainer.id = 'blocks-container';
-  editorContainer.appendChild(blocksContainer);
-
-  // Área de output en tiempo real
   const outputArea = document.createElement('pre');
   outputArea.id = 'editor-output';
-  outputArea.style.marginTop = '32px';
-  outputArea.style.background = '#f4f4f4';
-  outputArea.style.padding = '16px';
-  outputArea.style.borderRadius = '6px';
+  outputArea.style.background = 'inherit';
+  outputArea.style.padding = '0';
+  outputArea.style.border = 'none';
   outputArea.style.fontSize = '0.95rem';
   outputArea.style.overflowX = 'auto';
-  outputArea.style.border = '1px solid #e0e0e0';
-  editorContainer.appendChild(outputArea);
+  outputArea.style.margin = '0';
+  outputPanel.appendChild(outputArea);
+
+  // Panel 4: Texto final con variables
+  const finalPanel = document.createElement('div');
+  finalPanel.style.flex = '1 1 0';
+  finalPanel.style.maxWidth = '600px';
+  finalPanel.style.background = '#e9ecef';
+  finalPanel.style.border = '1px solid #d1d5db';
+  finalPanel.style.borderRadius = '8px';
+  finalPanel.style.padding = '24px';
+  finalPanel.style.color = '#333';
+  finalPanel.style.fontSize = '1.05rem';
+  finalPanel.style.margin = '32px 24px 32px 24px';
+  finalPanel.style.minHeight = '60px';
+  finalPanel.style.whiteSpace = 'pre-wrap';
+  finalPanel.style.wordBreak = 'break-word';
+  finalPanel.style.height = 'fit-content';
+
+  const finalTitle = document.createElement('h3');
+  finalTitle.textContent = 'Texto final';
+  finalTitle.style.fontSize = '1.1em';
+  finalTitle.style.marginTop = '0';
+  finalPanel.appendChild(finalTitle);
+
+  const finalText = document.createElement('div');
+  finalText.id = 'final-text';
+  finalText.style.opacity = '0.9';
+  finalPanel.appendChild(finalText);
+
+  // Agregar los paneles al layout principal en orden
+  mainLayout.appendChild(editorPanel);      // editor
+  mainLayout.appendChild(variablesPanel);   // variables
+  mainLayout.appendChild(outputPanel);      // output
+  mainLayout.appendChild(finalPanel);       // texto final
+
+  document.body.appendChild(mainLayout);
 
   // Función para actualizar el output, panel lateral y preview
   function updateOutput() {
@@ -158,9 +198,9 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     }
 
-    // Actualizar panel de preview
+    // Actualizar panel de texto final
     // Unir todos los bloques en un solo div, reemplazando {{}} por valores
-    let previewHTML = '';
+    let finalHTML = '';
     blocks.forEach(b => {
       if (!b) return;
       let html = b.innerHTML;
@@ -169,9 +209,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const key = p1.trim();
         return variableValues[key] !== undefined ? `<span style='color:#333;font-weight:500'>${variableValues[key]}</span>` : match;
       });
-      previewHTML += html + '<br/>';
+      finalHTML += html + '<br/>';
     });
-    previewPanel.innerHTML = previewHTML;
+    finalText.innerHTML = finalHTML;
   }
 
   // Función para crear un bloque editable con handler de arrastre
